@@ -31,13 +31,5 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
-  },
-  "plugins": {
-    "updater": {
-      "endpoints": [
-        "https://your-server.com/update/{{target}}/{{current_version}}"
-      ],
-      "pubkey": "YOUR_PUBLIC_KEY_HERE"
-    }
   }
 }
