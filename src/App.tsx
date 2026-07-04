@@ -799,7 +799,7 @@ function App() {
                   <div 
                     onClick={async () => {
                       if (token) {
-                        const url = `http://localhost:3000/login?token=${token}`;
+                        const url = `https://gc-pro.vercel.app/login?token=${token}`;
                         try {
                           await openUrl(url);
                         } catch (e) {
