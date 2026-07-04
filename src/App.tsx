@@ -561,7 +561,7 @@ function App() {
           </form>
           
           <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <GoogleOAuthProvider clientId=import.meta.env.VITE_GOOGLE_CLIENT_ID>
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
                <GoogleLogin
                   onSuccess={async (credentialResponse) => {
                     try {
