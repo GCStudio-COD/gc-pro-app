@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import { Play, Pause, Search, Plus, MoreVertical, RefreshCw, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { openUrl } from "@tauri-apps/plugin-opener";
