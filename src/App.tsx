@@ -4,6 +4,7 @@ import { Play, Pause, Search, Plus, MoreVertical, RefreshCw, ChevronLeft, Chevro
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { check } from "@tauri-apps/plugin-updater";
 import { onOpenUrl } from "@tauri-apps/plugin-deep-link";
+import { listen } from "@tauri-apps/api/event";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import "./App.css";
 
@@ -26,41 +27,61 @@ function App() {
     checkForUpdates();
   }, []);
 
+  const handleDeepLinkToken = async (token: string) => {
+    setIsAuthLoading(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const employee = await res.json();
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("loginTimestamp", new Date().toISOString());
+        
+        setToken(token);
+        setUser(employee);
+        
+        let role = "Employee";
+        if (employee.role === 'admin' || employee.role === 'SuperAdmin') role = "Admin";
+        else if (employee.role === 'project-manager') role = "PM";
+        
+        setUserRole(role as "Admin" | "PM" | "Employee");
+        setIsAuthenticated(true);
+        fetchProjects(token);
+        fetchAttendanceStatus(token);
+      } else {
+        alert("Authentication failed. Please try again.");
+      }
+    } catch (e) {
+      alert("Network error authenticating via deep link");
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
   // Deep-Link Listener
   useEffect(() => {
+    // 1. Standard Tauri v2 deep-link plugin listener
     const unlisten = onOpenUrl(async (urls) => {
-      console.log('Deep link opened:', urls);
+      console.log('Deep link opened (onOpenUrl):', urls);
       for (const url of urls) {
-        if (url.includes('gcapp://auth?token=')) {
+        if (url.includes('token=')) {
           const token = url.split('token=')[1];
           if (token) {
-             setIsAuthLoading(true);
-             try {
-               const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
-                 headers: { 'Authorization': `Bearer ${token}` }
-               });
-               if (res.ok) {
-                 const employee = await res.json();
-                 localStorage.setItem("authToken", token);
-                 localStorage.setItem("loginTimestamp", new Date().toISOString());
-                 
-                 setToken(token);
-                 setUser(employee);
-                 
-                 let role = "Employee";
-                 if (employee.role === 'admin' || employee.role === 'SuperAdmin') role = "Admin";
-                 else if (employee.role === 'project-manager') role = "PM";
-                 
-                 setUserRole(role as "Admin" | "PM" | "Employee");
-                 setIsAuthenticated(true);
-                 fetchProjects(token);
-                 fetchAttendanceStatus(token);
-               }
-             } catch (e) {
-               alert("Network error authenticating via deep link");
-             } finally {
-               setIsAuthLoading(false);
-             }
+             handleDeepLinkToken(token);
+          }
+        }
+      }
+    });
+
+    // 2. Fallback listener directly from single-instance event (for Windows)
+    const unlistenEvent = listen<string[]>('deep-link-received', (event) => {
+      console.log('Deep link opened (single-instance event):', event.payload);
+      for (const arg of event.payload) {
+        if (arg.includes('token=')) {
+          const token = arg.split('token=')[1];
+          if (token) {
+             handleDeepLinkToken(token);
           }
         }
       }
@@ -68,6 +89,7 @@ function App() {
 
     return () => {
       unlisten.then(fn => fn());
+      unlistenEvent.then(fn => fn());
     };
   }, []);
   const [userRole, setUserRole] = useState<"Admin" | "PM" | "Employee">("Admin");
@@ -477,7 +499,7 @@ function App() {
             created: new Date(t.createdAt).toLocaleString(),
             isCompleted: t.status === 'Done'
           }))
-        }));
+        })).filter((p: any) => p.tasks && p.tasks.length > 0);
         setProjects(mapped);
       }
     } catch (err) {
@@ -716,6 +738,7 @@ function App() {
           </div>
           <div className="current-user-info">
             <h2>{userRole}</h2>
+            {user && <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '8px', marginTop: '-4px' }}>{user.firstName} {user.lastName}</p>}
             <p>{activeTask ? activeTask.name : 'No task selected'}</p>
           </div>
           <button className="play-button-big" onClick={() => isPlaying ? stopBackendTimer() : (selectedTaskId && startBackendTimer(selectedTaskId))}>

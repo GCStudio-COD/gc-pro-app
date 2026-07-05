@@ -34,7 +34,9 @@
   },
   "plugins": {
     "deep-link": {
-      "schemes": ["gcapp"]
+      "desktop": {
+        "schemes": ["gcapp"]
+      }
     }
   }
 }
