@@ -8,12 +8,15 @@ import { listen } from "@tauri-apps/api/event";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import "./App.css";
 
+const isTauri = () => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+
 function App() {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
   // Auto-Updater Check
   useEffect(() => {
     async function checkForUpdates() {
+      if (!isTauri()) return;
       try {
         const update = await check();
         if (update) {
@@ -63,6 +66,8 @@ function App() {
 
   // Deep-Link Listener
   useEffect(() => {
+    if (!isTauri()) return;
+
     // 1. Standard Tauri v2 deep-link plugin listener
     const unlisten = onOpenUrl(async (urls) => {
       console.log('Deep link opened (onOpenUrl):', urls);
@@ -1057,9 +1062,13 @@ function App() {
                       if (token) {
                         const url = `https://gc-pro.vercel.app/login?token=${token}`;
                         try {
-                          await openUrl(url);
+                          if (isTauri()) {
+                            await openUrl(url);
+                          } else {
+                            window.open(url, '_blank');
+                          }
                         } catch (err) {
-                          console.error("Failed to use openUrl:", err);
+                          console.error("Failed to open URL:", err);
                           window.open(url, '_blank');
                         }
                       } else {
