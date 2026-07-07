@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, Search, Plus, MoreVertical, RefreshCw, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { Play, Pause, Search, Plus, MoreVertical, RefreshCw, ChevronLeft, ChevronRight, Check, Eye, EyeOff } from "lucide-react";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { check } from "@tauri-apps/plugin-updater";
 import { onOpenUrl } from "@tauri-apps/plugin-deep-link";
@@ -109,6 +109,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState<boolean>(false);
   const [taskFilter, setTaskFilter] = useState<"all" | "completed" | "pending">("all");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
     const handleOutsideClick = () => {
@@ -909,7 +910,23 @@ function App() {
                   </div>
                   <div className="auth-input-group">
                     <label>Password</label>
-                    <input type="password" name="password" placeholder="••••••••" required />
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <input 
+                        type={showPassword ? "text" : "password"} 
+                        name="password" 
+                        placeholder="••••••••" 
+                        required 
+                        style={{ width: '100%', boxSizing: 'border-box', paddingRight: '40px' }}
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: 0, display: 'flex' }}
+                        title={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                     <div style={{ textAlign: 'right', marginTop: '2px' }}>
                       <button type="button" onClick={() => setAuthMode('forgot-password')} style={{ background: 'none', border: 'none', color: '#666', fontSize: '11px', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
                         Forgot Password?
