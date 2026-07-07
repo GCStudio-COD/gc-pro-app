@@ -1243,6 +1243,7 @@ function App() {
                     >Pending Tasks</div>
                   </div>
                 )}
+                </div>
               </div>
             </div>
             <div className="header-subtitle-new">
