@@ -1173,30 +1173,7 @@ function App() {
             })}
           </div>
 
-          {selectedTaskId && !activeTask?.isCompleted && (
-            <div style={{ padding: '20px', borderTop: '1px solid var(--border-color)', backgroundColor: '#f9f9f9', marginTop: 'auto' }}>
-              <button 
-                onClick={handleCompleteTask}
-                style={{ 
-                  width: '100%', 
-                  padding: '12px', 
-                  backgroundColor: '#000', 
-                  color: '#fff', 
-                  border: 'none', 
-                  borderRadius: '6px', 
-                  fontWeight: 'bold', 
-                  cursor: 'pointer',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <Check size={18} />
-                Complete Task
-              </button>
-            </div>
-          )}
+
         </aside>
 
         {/* Main Content */}
@@ -1204,13 +1181,35 @@ function App() {
           <div className="main-header-new">
             <div className="header-top-new">
               <h1>To-dos</h1>
-              <div style={{ position: 'relative' }}>
-                <MoreVertical 
-                  size={20} 
-                  color="var(--text-gray)" 
-                  style={{ cursor: 'pointer' }} 
-                  onClick={(e) => { e.stopPropagation(); setIsMenuOpen(!isMenuOpen); }}
-                />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                {selectedTaskId && !activeTask?.isCompleted && (
+                  <button 
+                    onClick={handleCompleteTask}
+                    style={{ 
+                      padding: '6px 12px', 
+                      backgroundColor: '#000', 
+                      color: '#fff', 
+                      border: 'none', 
+                      borderRadius: '6px', 
+                      fontWeight: '600', 
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '13px'
+                    }}
+                  >
+                    <Check size={14} />
+                    Complete Task
+                  </button>
+                )}
+                <div style={{ position: 'relative' }}>
+                  <MoreVertical 
+                    size={20} 
+                    color="var(--text-gray)" 
+                    style={{ cursor: 'pointer' }} 
+                    onClick={(e) => { e.stopPropagation(); setIsMenuOpen(!isMenuOpen); }}
+                  />
                 {isMenuOpen && (
                   <div style={{ 
                     position: 'absolute', 
