@@ -1182,27 +1182,6 @@ function App() {
             <div className="header-top-new">
               <h1>To-dos</h1>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                {selectedTaskId && !activeTask?.isCompleted && (
-                  <button 
-                    onClick={handleCompleteTask}
-                    style={{ 
-                      padding: '6px 12px', 
-                      backgroundColor: '#000', 
-                      color: '#fff', 
-                      border: 'none', 
-                      borderRadius: '6px', 
-                      fontWeight: '600', 
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontSize: '13px'
-                    }}
-                  >
-                    <Check size={14} />
-                    Complete Task
-                  </button>
-                )}
                 <div style={{ position: 'relative' }}>
                   <MoreVertical 
                     size={20} 
@@ -1338,6 +1317,34 @@ function App() {
                      <p>Select a project to see available sub-tasks.</p>
                   </div>
                </div>
+            </div>
+          )}
+          
+          {selectedTaskId && !activeTask?.isCompleted && (
+            <div style={{ position: 'fixed', bottom: '40px', right: '40px', zIndex: 100 }}>
+              <button 
+                onClick={handleCompleteTask}
+                style={{ 
+                  padding: '16px 28px', 
+                  backgroundColor: '#000', 
+                  color: '#fff', 
+                  border: 'none', 
+                  borderRadius: '50px', 
+                  fontWeight: 'bold', 
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+                  fontSize: '15px',
+                  transition: 'transform 0.2s ease-in-out'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <Check size={20} />
+                Complete Task
+              </button>
             </div>
           )}
         </main>
