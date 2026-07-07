@@ -1150,7 +1150,7 @@ function App() {
             <input type="text" placeholder="adm" defaultValue="adm" />
           </div>
 
-          <div className="project-section">
+          <div className="project-section" style={{ flex: 1, overflowY: 'auto' }}>
             <div className="project-section-title">
               Assigned Projects
             </div>
@@ -1172,6 +1172,31 @@ function App() {
               );
             })}
           </div>
+
+          {selectedTaskId && !activeTask?.isCompleted && (
+            <div style={{ padding: '20px', borderTop: '1px solid var(--border-color)', backgroundColor: '#f9f9f9', marginTop: 'auto' }}>
+              <button 
+                onClick={handleCompleteTask}
+                style={{ 
+                  width: '100%', 
+                  padding: '12px', 
+                  backgroundColor: '#000', 
+                  color: '#fff', 
+                  border: 'none', 
+                  borderRadius: '6px', 
+                  fontWeight: 'bold', 
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <Check size={18} />
+                Complete Task
+              </button>
+            </div>
+          )}
         </aside>
 
         {/* Main Content */}
